@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Converter</title>
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    </br>
+    <h1 >DEGREE</h1>
+    </br>
+    <h1>CONVERTER</h1>
+    </br>
+    </br>
+    {% block content %}
+    <form action="" method="post">
+        <input type="text" placeholder="Input only numbers" name="degree" id="degree">
+        </br>
+        </br>
+        <button id="submit"></button>
+    </form>
+    {% endblock content %}
+</body>
+<script>
+    submit_btn = document.getElementById("submit");
+    submit_btn.addEventListener('click', function (e) {
+        e.preventDefault()
+
+        var form = document.querySelector("form");
+
+        console.log("foobar")
+        var degree = form.elements.degree.value;
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/converted", true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onload = function (e) {
+        console.log(e);
+            if (e.currentTarget.status == 400) {
+                error_element = document.getElementById("errors");
+                error_json = JSON.parse(e.currentTarget.response);
+                console.log(error_json);
+                errors = error_json.errors;
+                for (i = 0; i < errors.length; i++) {
+                error_msg = errors[i];
+                error_html = '<li id="error_row">' + error_msg + '</li>';
+                error_element.innerHTML = error_element.innerHTML + error_html;
+                }
+            }
+        };
+        xhr.send(JSON.stringify(data));
+    })
+    // function loadXMLDoc() {
+    // var xhttp = new XMLHttpRequest();
+    // xhttp.onreadystatechange = function() {
+    //     if (this.readyState == 4 && this.status == 200) {
+    //     document.getElementById("demo").innerHTML =
+    //     this.responseText;
+    //     }
+    // };
+    // xhttp.open("GET", "xmlhttp_info.txt", true);
+    // xhttp.send();
+    // }
+</script>
+</html>
