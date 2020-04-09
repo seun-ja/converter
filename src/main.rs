@@ -7,7 +7,6 @@ extern crate serde_json;
 
 use rocket::request::Request;
 use std::collections::HashMap;
-use rocket::http::RawStr;
 use rocket::response::status;
 use rocket::response::{Responder, Response};
 use rocket::http::{ContentType, Status};
@@ -15,9 +14,7 @@ use rocket_contrib::json::{Json, JsonValue};
 use std::io;
 use rocket_contrib::templates::Template;
 use rocket::response;
-use rocket::data::FromData;
 // use chrono::{DateTime, TimeZone, Utc};
-
 
 #[derive(Debug)]
 struct ApiResponse {
@@ -36,7 +33,28 @@ impl<'r> Responder<'r> for ApiResponse {
 
 #[post("/converted", format = "application/json", data = "<data>")]
 fn home(data: Json<Input>) -> ApiResponse {
+    // let mut input = String::new();
+
+    // io::stdin().read_line(&mut input)
+    //     .expect("Failed to read line");
+
+    // let input: u32 = input.trim().parse().expect("Please input interger");
+
+    // let fahrenheit = Input {degree: input};
+
+    // print!("fahrenheit = {}", fahrenheit.degree_converter());
+
+    println!("{:#?}", data);
+
     let mut errors: Vec<String> = vec![];
+
+    if data.degree < 1  {
+        let fahrenheit = Input {degree: data.degree};
+
+        print!("fahrenheit = {}", fahrenheit.degree_converter());
+    
+        errors.push("You must include a number.".to_string());
+    };
 
     if errors.len() > 0 {
         let error_response_json = json!({ "errors": errors });
@@ -58,7 +76,7 @@ fn index() -> Template {
     Template::render("index", &context)
 }
 
-#[derive(Debug, FromForm)]
+#[derive(Debug, FromForm, Deserialize)]
 struct Input {
     degree: u32
 }
@@ -77,16 +95,5 @@ fn main() {
         .attach(Template::fairing())
         .launch();
 
-    let mut input = String::new();
-
-    io::stdin().read_line(&mut input)
-        .expect("Failed to read line");
-
-    let input: u32 = input.trim().parse().expect("Please input interger");
-
-    let fahrenheit = Input {degree: input};
-
-    print!("fahrenheit = {}", fahrenheit.degree_converter());
+    
 }
-
-
