@@ -7,4 +7,21 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-rocket = "0.4.2"
+rocket = { version = "0.4.2", features = ["tls"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_derive = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+
+[development]
+template_dir = "templates/"
+assets_dir = "assets/"
+
+[production]
+template_dir = "templates/"
+assets_dir = "assets/"
+
+[dependencies.rocket_contrib]
+version = "0.4.3"
+default-features = false
+features = ["json", "handlebars_templates", "serve", "tera_templates"]
